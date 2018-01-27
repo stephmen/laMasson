@@ -12,7 +12,7 @@ const dropdown = new google.maps.places.Autocomplete(input);
   });
   // if someone hits enter on the adress field don't submit teh form
   input.on('keycode', (e) => {
-    if(e.keycode ===13) e.preventDefault();
+    if(e.keycode === 13) e.preventDefault();
   })
 }
 
