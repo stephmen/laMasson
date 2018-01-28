@@ -122,4 +122,20 @@ exports.updateStore = async (req, res) => {
          .limit(5);
     res.json(stores);
  };
- //
+ exports.mapStores = async (req, res) => {
+    const coordinates = [req.query.lng, req.query.lat].map(parseFloat);
+    const q = {
+        location: {
+             $near: {
+                 $geometry: {
+                     type: 'Point',
+                     coordinates
+                 },
+                 //$maxDistance: 10000 // DO NOT FORGET THE URL !!!
+                 //http://localhost:7777/api/stores/near?lat=43.2&lng=-79.8
+             }
+         }
+    };
+   const stores = await Store.find(q).select('slug name description location').limit(10);
+   res.json(stores);
+};
