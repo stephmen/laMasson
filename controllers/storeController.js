@@ -86,14 +86,14 @@ exports.updateStore = async (req, res) => {
     //redirect them the store and tell them if it worked
 };
 
- exports.getStoreBySlug = async (req, res) => {
+exports.getStoreBySlug = async (req, res) => {
      const store = await Store.findOne({slug: req.params.slug}).populate('author');
      if(!store) return next();
      //res.json(store);
      res.render('store', { store, title: store.name}) 
- }  
+}  
 
- exports.getStoreByTag = async (req,res) => {
+exports.getStoreByTag = async (req,res) => {
     const tag = req.params.tag;
     const tagQuery = tag || { $exists: true };
     const tagsPromise = Store.getTagsList();
@@ -103,7 +103,7 @@ exports.updateStore = async (req, res) => {
     res.render('tag', { tags, title: 'Tags', tag, stores });
  };
 
- exports.searchStores = async (req, res) => {
+exports.searchStores = async (req, res) => {
     //res.json(req.query) 
     const stores = await Store
     //First find stores that match
@@ -121,8 +121,9 @@ exports.updateStore = async (req, res) => {
          //limit 5 
          .limit(5);
     res.json(stores);
- };
- exports.mapStores = async (req, res) => {
+};
+
+exports.mapStores = async (req, res) => {
     const coordinates = [req.query.lng, req.query.lat].map(parseFloat);
     const q = {
         location: {
@@ -131,11 +132,15 @@ exports.updateStore = async (req, res) => {
                      type: 'Point',
                      coordinates
                  },
-                 //$maxDistance: 10000 // DO NOT FORGET THE URL !!!
+                 $maxDistance: 10000 // DO NOT FORGET THE URL !!!
                  //http://localhost:7777/api/stores/near?lat=43.2&lng=-79.8
              }
          }
     };
-   const stores = await Store.find(q).select('slug name description location').limit(10);
+   const stores = await Store.find(q).select('slug name description location photo').limit(10);
    res.json(stores);
 };
+
+exports.mapPage = async (req, res) => {
+    res.render('map', { title: 'Map'} );
+}
